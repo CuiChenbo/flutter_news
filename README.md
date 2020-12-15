@@ -1,6 +1,6 @@
 # flutter_news
 
-A new Flutter application.
+Flutter新闻案例，练手项目
 
 ## Getting Started
 
