@@ -25,6 +25,7 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
         videoPlayerController: _videoPlayerController,
         autoPlay: true,
         allowFullScreen:true,
+        fullScreenByDefault:true,
         // aspectRatio: 16/9,
     );
   }
@@ -40,10 +41,16 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
-        child: Chewie(controller: _chewieController,),
+      body: Stack(
+        children: [
+          Chewie(controller: _chewieController,),
+          FlatButton(
+            child: IconButton(icon: Icon(Icons.arrow_back_ios),),
+            onPressed: (){
+              Navigator.pop(context);
+            },
+          )
+        ],
       )
     );
   }

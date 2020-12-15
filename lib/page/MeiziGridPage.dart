@@ -4,6 +4,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_news/bean/meizi_bean.dart';
 
+import 'PhotoViewGalleryScreen.dart';
+
 class MeiziGridPage extends StatefulWidget {
   MeiziGridPage({Key key}) : super(key: key);
 
@@ -28,26 +30,22 @@ class _MeiziGridPageState extends State<MeiziGridPage> {
   }
 
   Dio _dio = new Dio();
-  
+
   Future<void> goHttp() async {
-    Response response = await _dio.get("https://gank.io/api/v2/data/category/Girl/type/Girl/page/2/count/50");
+    Response response = await _dio.get(
+        "https://gank.io/api/v2/data/category/Girl/type/Girl/page/2/count/50");
     Map maps = json.decode(response.toString());
     _meiziBean = new MeiziBean.fromJson(maps);
     setData();
   }
 
-  void setData(){
-    setState(() {
-
-    });
+  void setData() {
+    setState(() {});
   }
-
-
 
   @override
   Widget build(BuildContext context) {
-
-    if(_meiziBean == null){
+    if (_meiziBean == null) {
       return SliverToBoxAdapter(
         child: Container(
           alignment: Alignment.center,
@@ -66,12 +64,36 @@ class _MeiziGridPageState extends State<MeiziGridPage> {
           // childAspectRatio: 4.0,
         ),
         delegate: new SliverChildBuilderDelegate(
-              (BuildContext context, int index) {
+          (BuildContext context, int index) {
             //创建子widget
             return new Container(
-              height: 260,
-              child: Image.network(_meiziBean.data[index].url , fit: BoxFit.cover,),
-            );
+                height: 260,
+                child: GestureDetector(
+                  child: Image.network(
+                    _meiziBean.data[index].url,
+                    fit: BoxFit.cover,
+                  ),
+                  onTap: () {
+                    Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+
+                      //允许多查看5张图片
+                      List<String> lists = new List();
+                      if (_meiziBean.data.length > index + 5) {
+                        for (int i = index; i < index + 5; i++) {
+                          lists.add(_meiziBean.data[i].url);
+                        }
+                      } else {
+                        lists.add(_meiziBean.data[index].url);
+                      }
+                      print(lists.length);
+                      return PhotoViewGalleryScreen(
+                        images: lists,
+                        index: 0,
+                        heroTag: 'simple',
+                      );
+                    }));
+                  },
+                ));
           },
           childCount: _meiziBean.data.length,
         ),
